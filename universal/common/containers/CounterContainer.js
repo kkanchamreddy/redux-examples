@@ -8,10 +8,8 @@ class CounterContainer extends Component {
   }
 
   render() {
-    const {counter, counter1} = this.props;
+    //const {counter, counter1} = this.props;
     console.log('this.props ', this.props);
-    console.log('Counter  ', counter);
-    console.log('Counter--1', counter1);
 
     return (
       <div>

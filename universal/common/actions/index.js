@@ -5,19 +5,22 @@ export const DECREMENT_COUNTER = 'DECREMENT_COUNTER'
 export function set(value) {
   return {
     type: SET_COUNTER,
-    payload: value
+    payload: value,
+    id
   }
 }
 
 export function increment() {
   return {
-    type: INCREMENT_COUNTER
+    type: INCREMENT_COUNTER,
+    id
   }
 }
 
 export function decrement() {
   return {
-    type: DECREMENT_COUNTER
+    type: DECREMENT_COUNTER,
+    id
   }
 }
 

@@ -6,10 +6,7 @@ import CounterContainer from './CounterContainer'
 
 function mapStateToProps(state) {
   console.log('State Insidee App.js', state);
-  return {
-    counter: state.counter,
-    counter1: state.counter1
-  }
+  return state;
 }
 
 function mapDispatchToProps(dispatch) {

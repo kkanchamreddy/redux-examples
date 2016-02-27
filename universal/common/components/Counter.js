@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 
 class Counter extends Component {
   render() {
+    console.log('Inside the Counter Component');
     const { increment, incrementIfOdd, incrementAsync, decrement, counter } = this.props
     return (
       <p>
