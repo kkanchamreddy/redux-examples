@@ -14,12 +14,10 @@ class CounterContainer extends Component {
     console.log('Counter--1', counter1);
 
     return (
-
       <div>
-        <Counter {...this.props}/>
-        <Counter {...this.props}/>
+        <Counter  id ="1" {...this.props}/>
+        <Counter id ="2" {...this.props}/>
       </div>
-
     );
   }
 }
