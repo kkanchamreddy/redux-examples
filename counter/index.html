@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.1.7/redux.js"></script>
+	  <script src="http://fb.me/react-with-addons-0.14.3.js"></script>
+	  <script src="http://fb.me/react-dom-0.14.3.js"></script>
+
+	  <script src="https://wzrd.in/standalone/expect@latest"></script>
+	  <script src="https://wzrd.in/standalone/deep-freeze@latest"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.0.0/react-redux.js"></script>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width">
+  <title>JS Bin-Redux</title>
+</head>
+<body>
+  <div id="root"> </di>
+</body>
+
+<script>
+//reducer
+const counter = (state = 0, action) => {
+  switch(action.type) {
+    case 'INCREMENT':
+        return state + 1;
+    case 'DECREMENT':
+        return state - 1;
+    default:
+        return state;
+  }
+};
+
+//React component
+const Counter = ({value,
+               onIncrement,
+               onDecrement
+               }) => (
+  <div>
+    <h1> {value} </h1>
+    <button onClick = {onIncrement}> + </button>
+    <button onClick = {onDecrement}> - </button>
+  </div>
+);
+
+const {createStore} = Redux;
+const store = createStore(counter);
+
+const render = () => {
+  ReactDOM.render(
+    <Counter
+      value = {store.getState()}
+      onIncrement = {() =>
+        store.dispatch({type: 'INCREMENT'})
+      }
+      onDecrement = {() =>
+        store.dispatch({type: 'DECREMENT'})
+      }
+      />,
+    document.getElementById('root')
+  )
+};
+
+//When a state is update because of dispatching action , the listener(render in this case) will be called with the new state
+//There can be as many listeners as needed
+store.subscribe(render);
+
+// Render the initial state
+render();
+</script>
+</html>
