@@ -45,7 +45,7 @@ const todo =(state = {}, action) => {
 }
 
 const todos = (state = [], action) => {
-  //console.log('todos---', state, action);
+
   switch(action.type) {
     case 'ADD_TODO':
       return [
@@ -112,21 +112,42 @@ class FilterLink extends Component {
 const FilterLink = ({
   filter,
   currentFilter,
-  children
+  children,
+  onClick
 }) => {
   if(filter === currentFilter) {
     return(<span> {children}</span>)
   }
+
   return (
       <a   href='#'
-         onClick = {e =>{
+          onClick = {e =>{
             e.preventDefault();
-            store.dispatch({type: 'SET_VISIBILITY_FILTER', filter: filter});
-          }
-        }>
+            onClick(filter);
+
+          }}
+        >
           {children}
       </a>
     );
+}
+
+const Footer = ({
+  visibilityFilter,
+  onFilterClick
+}) => {
+
+  return (
+    <p>
+      Show:
+      {' '}
+      <FilterLink filter="SHOW_ALL" currentFilter = {visibilityFilter} onClick={onFilterClick}>All</FilterLink>
+      {' '}
+      <FilterLink filter="SHOW_ACTIVE" currentFilter = {visibilityFilter} onClick={onFilterClick}>Active</FilterLink>
+      {' '}
+      <FilterLink filter="SHOW_COMPLETED" currentFilter = {visibilityFilter}onClick={onFilterClick}>Completed</FilterLink>
+     </p>
+  )
 }
 
 let nextTodoId = 0;
@@ -165,7 +186,6 @@ const TodoList = ({
   </ul>)
 }
 
-
 const AddTodo = ({
   onAddClick
 }) => {
@@ -192,6 +212,7 @@ class TodoApp extends Component {
       todos,
       visibilityFilter
     } = this.props;
+
     const visibleTodos = getVisibleTodos(
       todos,
       visibilityFilter
@@ -199,13 +220,14 @@ class TodoApp extends Component {
 
     return (
       <div>
-      <AddTodo
-        onAddClick = {text =>
-            store.dispatch({type: 'ADD_TODO',
-                            id: nextTodoId++,
-                            text
-                          })
-        }
+        <AddTodo
+          onAddClick = {text =>
+              store.dispatch({type: 'ADD_TODO',
+                              id: nextTodoId++,
+                              text
+                            })
+          }
+        />
 
         <TodoList
            todos = {visibleTodos}
@@ -214,15 +236,13 @@ class TodoApp extends Component {
            }
          />
 
-        <p>
-          Show:
-          {' '}
-          <FilterLink filter="SHOW_ALL" currentFilter = {visibilityFilter}>All</FilterLink>
-          {' '}
-          <FilterLink filter="SHOW_ACTIVE" currentFilter = {visibilityFilter}>Active</FilterLink>
-          {' '}
-          <FilterLink filter="SHOW_COMPLETED" currentFilter = {visibilityFilter}>Completed</FilterLink>
-        </p>
+
+         <Footer
+           visibilityFilter = {visibilityFilter}
+           onFilterClick = {filter => {
+                      store.dispatch({type: 'SET_VISIBILITY_FILTER', filter: filter});
+                     }}
+         />
       </div>
     )
   }
