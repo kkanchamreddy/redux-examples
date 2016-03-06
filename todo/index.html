@@ -17,8 +17,6 @@
 </body>
 
 <script>
-const {combineReducers, createStore} = Redux;
-//const {createStore} = Redux;
 
 const todo =(state = {}, action) => {
 
@@ -68,10 +66,7 @@ const visibilityFilter = (state ='SHOW_ALL' , action) => {
   }
 };
 
-const todoApp = combineReducers({
-  todos,
-  visibilityFilter
-});
+
 
 const getVisibleTodos = (todos, filter) =>{
 
@@ -88,7 +83,7 @@ const getVisibleTodos = (todos, filter) =>{
 
 }
 
-const store = createStore(todoApp);
+
 
 const {Component} =  React;
 
@@ -136,9 +131,10 @@ const Link = ({
 class FilterLink extends Component {
 
   componentDidMount() {
-      this.unsubscribe = store.subscribe(()=>
+     const { store } = this.props;
+     this.unsubscribe = store.subscribe(()=>
         this.forceUpdate()
-      );
+      )
   }
 
   componentWillUnmount() {
@@ -146,7 +142,9 @@ class FilterLink extends Component {
   }
 
   render() {
+
     const props = this.props;
+    const { store } = props;
     const state = store.getState();
 
     return (
@@ -169,10 +167,12 @@ class FilterLink extends Component {
 }
 
 class VisibleTodoList extends Component {
+
   componentDidMount() {
-      this.unsubscribe = store.subscribe(()=>
+     const { store } = this.props;
+     this.unsubscribe = store.subscribe(()=>
         this.forceUpdate()
-      );
+      )
   }
 
   componentWillUnmount() {
@@ -180,7 +180,9 @@ class VisibleTodoList extends Component {
   }
 
   render() {
+
     const props = this.props;
+    const { store } = props;
     const state = store.getState();
 
     return(
@@ -198,17 +200,17 @@ class VisibleTodoList extends Component {
 }
 
 
-const Footer = () => {
+const Footer = ({store}) => {
 
   return (
     <p>
       Show:
       {' '}
-      <FilterLink filter="SHOW_ALL" >All</FilterLink>
+      <FilterLink store = {store} filter="SHOW_ALL" >All</FilterLink>
       {' '}
-      <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>
+      <FilterLink store = {store} filter="SHOW_ACTIVE">Active</FilterLink>
       {' '}
-      <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
+      <FilterLink store = {store} filter="SHOW_COMPLETED">Completed</FilterLink>
      </p>
   )
 }
@@ -249,8 +251,10 @@ const TodoList = ({
   </ul>)
 }
 
-const AddTodo = () => {
-  let input
+const AddTodo = ({
+  store
+}) => {
+  let input;
   return (
     <div>
     <input ref ={(node)=>{
@@ -272,21 +276,27 @@ const AddTodo = () => {
 
 class TodoApp extends Component {
   render() {
+    const { store } = this.props;
     return (
       <div>
-        <AddTodo/>
-        <VisibleTodoList/>
-        <Footer />
+        <AddTodo store = {store}/>
+        <VisibleTodoList store = {store}/>
+        <Footer store = {store}/>
       </div>
     )
   }
 }
 
+const {createStore,combineReducers} = Redux;
+
+const todoApp = combineReducers({
+  todos,
+  visibilityFilter
+});
+
 ReactDOM.render(
-    <TodoApp
-      {...store.getState()}
-    />,
-    document.getElementById('root')
+  <TodoApp store = {createStore(todoApp)}/>,
+  document.getElementById('root')
 );
 
 </script>
