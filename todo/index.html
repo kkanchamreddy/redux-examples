@@ -18,8 +18,7 @@
 </body>
 
 <script>
-
-
+const { connect } = ReactRedux;
 const todo =(state = {}, action) => {
 
   switch(action.type) {
@@ -114,48 +113,31 @@ const Link = ({
     );
 }
 
+const mapStateToLinkProps = (state, ownProps) => {
+  return {
+    active : {
+           ownProps.filter ===
+           state.visibilityFilter
+       }
+  };
+}
 
-class FilterLink extends Component {
-
-  componentDidMount() {
-     const { store } = this.context;
-     this.unsubscribe = store.subscribe(()=>
-        this.forceUpdate()
-      )
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  render() {
-
-    const props = this.props;
-    const { store } = this.context;
-    const state = store.getState();
-
-    return (
-      <Link
-        active = {
-                  props.filter ===
-                  state.visibilityFilter
-                }
-        onClick = {() => {
-          store.dispatch({
+const mapStateToLinkProps =(dispatch, ownProps) => {
+  return {
+    onClick: () => {
+          dispatch({
             type: 'SET_VISIBILITY_FILTER',
-            filter: props.filter
+            filter: ownProps.filter
           });
-        }}
-      >
-          {props.children}
-       </Link>
-    );
-  }
+        }
+  };
 }
 
-FilterLink.contextTypes = {
-  store: React.PropTypes.object
-}
+const FilterLink = connect(
+  mapStateToLinkProps,
+  mapStateToLinkProps
+)(Link);
+
 
 const mapStateToProps = (state) => {
     return {
@@ -173,6 +155,10 @@ const mapDispatchToProps = (dispatch) => {
     }
   };
 }
+
+
+
+
 
 const Footer = () => {
 
@@ -228,7 +214,7 @@ const TodoList = ({
   </ul>)
 }
 
-let AddTodo = (props, {store}) => {
+let AddTodo = ({dispatch}) => {
   let input;
   return (
     <div>
@@ -236,7 +222,7 @@ let AddTodo = (props, {store}) => {
             input = node;
         }}/>
     <button onClick = {()=> {
-         store.dispatch({
+         dispatch({
               type: 'ADD_TODO',
               id: nextTodoId++,
               text:input.value
@@ -248,10 +234,12 @@ let AddTodo = (props, {store}) => {
     </div>
   )
 }
+
 AddTodo = connect()(AddTodo);
 
 class TodoApp extends Component {
   render() {
+
     return (
       <div>
         <AddTodo />
@@ -270,11 +258,12 @@ const todoApp = combineReducers({
   visibilityFilter
 });
 
-const { connect } = ReactRedux;
+
 const VisibleTodoList = connect(
   mapStateToProps,
   mapDispatchToProps
 )(TodoList);
+
 
 ReactDOM.render(
   <Provider store = {createStore(todoApp)}>
@@ -282,6 +271,5 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 );
-
 </script>
 </html>
