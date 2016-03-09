@@ -174,12 +174,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 }
 
-const { connect } = ReactRedux;
-const VisibleTodoList = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TodoList);
-
 const Footer = () => {
 
   return (
@@ -261,7 +255,6 @@ AddTodo.contextTypes = {
 
 class TodoApp extends Component {
   render() {
-
     return (
       <div>
         <AddTodo />
@@ -279,6 +272,12 @@ const todoApp = combineReducers({
   todos,
   visibilityFilter
 });
+
+const { connect } = ReactRedux;
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList);
 
 ReactDOM.render(
   <Provider store = {createStore(todoApp)}>
