@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Simple Web App</title>
+	<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+	<script type="text/javascript" src="DataTables/datatables.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="jquery-ui.css"/>
+	<script type="text/javascript" src="jquery-ui.min.js"></script>
+	<style>
+	body{
+		padding: 30px;
+	}
+	#customform {
+		min-height: 180px;
+	}
+	.action-buttons {
+		margin-top: 30px;
+	}
+		#errMsg {
+			display: none;
+			color: red;
+			margin-top: 15px;
+		}
+	</style>
+</head>
+<script>
+	var colors = ['Red', 'Yellow', 'Green'];
+</script>
+<body>
+	<div class="row">
+	  <div class="col-md-3"></div>
+		<div class="col-md-3">
+			<form action="" method="post" id="customform" class="form-horizontal">
+					<div class="form-group">
+						<label for="FIELD1" class="col-sm-2 control-label">FIELD1*</label>
+						<div class="col-sm-10">
+							<input type="text" name="field1" id="FIELD1" class="form-control"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="FIELD2" class="col-sm-2 control-label">FIELD2</label>
+						<div class="col-sm-10">
+							<input type="text" name="FIELD2" id="FIELD2" class="form-control"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="FIELD3" class="col-sm-2 control-label">FIELD3*</label>
+						<div class="col-sm-10">
+							<select name="FIELD3" id="FIELD3" class="form-control"></select>
+						</div>
+					</div>
+					<div class="col-sm-offset-2 col-sm-10">
+						<div id ="errMsg"> Required fields are missing </div>
+					</div>
+
+			</form>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button id="clrBtn" class="btn btn-default"> Clear </button>
+					<button id="addBtn" class="btn btn-primary"> Add </button>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div class="col-md-6"></div>
+	</div>
+	<div class ="row">
+		<div class="col-sm-3"> </div>
+		<div class ="col-sm-6">
+			<table id="data-table" class="table table-striped" width="100%">
+				<thead>
+            <tr>
+                <th>FIELD1</th>
+                <th>FIELD2</th>
+                <th>FIELD3</th>
+            </tr>
+        </thead>
+			</table>
+		</div>
+		<div class="col-sm-3"> </div>
+	</div>
+
+</body>
+
+<script>
+	var $body = $('body'),
+			$field1 = $('#FIELD1'),
+			$field2 = $('#FIELD2'),
+			$field3 = $('#FIELD3'),
+			$addBtn = $('#addBtn'),
+			$clrBtn = $('#clrBtn'),
+			dataTable =  $('#data-table').DataTable(
+				{
+					scrollY: "200px",
+					scrollCollapse: true,
+					paging: false
+				});
+	function resetFields() {
+		$('#errMsg').hide();
+		$field1.val('');
+		$field3.val('');
+	}
+
+	function addData(evt) {
+		evt.preventDefault();
+		if($field1.val() != '' && $field3.val()!= '') {
+
+			dataTable.row.add([$field1.val(), $field2.val(), $field3.val()]).draw(false);
+			resetFields();
+
+		} else {
+			//show error message
+			$('#errMsg').show();
+		}
+		console.log('Inside add');
+	}
+
+	function clearData(evt) {
+		evt.preventDefault();
+		console.log('Inside Clear');
+		dataTable.row('.selected').remove().draw( false );
+	}
+
+
+	$body.ready(function(){
+		colors.forEach(function (color) {
+			 $('#FIELD3').append('<option value='+color+'>'+color+'</option>');
+		});
+
+		$( "#FIELD2" ).datepicker();
+		//bind events for add and clear buttons
+		$addBtn.click(addData);
+		$clrBtn.click(clearData);
+
+		$('#data-table tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            dataTable.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    } );
+
+	})
+
+
+</script>
+</html>
